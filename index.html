@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bank Exam Quiz</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+}
+
+/* ========================= */
+/* TIMER AREA */
+/* ========================= */
+
+#timer-container{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:#f4f6f9;
+    padding-bottom:10px;
+}
+
+#timer{
+    background:#222;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.timer-buttons{
+    text-align:center;
+}
+
+#pauseBtn,
+#resumeBtn{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    margin:5px;
+}
+
+#pauseBtn{
+    background:#ff9800;
+    color:white;
+}
+
+#resumeBtn{
+    background:#28a745;
+    color:white;
+}
+
+.question{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.question h3{
+    margin-bottom:15px;
+}
+
+.option{
+    display:block;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#f0f0f0;
+}
+
+.selected{
+    background:#cfe2ff;
+    border:2px solid #0d6efd;
+}
+
+.mark-btn{
+    margin-top:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#ff9800;
+    color:white;
+}
+
+.marked{
+    background:#ffcc80 !important;
+}
+
+.review-marked{
+    background:#e0e0e0 !important;
+    border:2px solid #9e9e9e;
+}
+
+.clear-btn{
+    margin-top:10px;
+    margin-left:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#dc3545;
+    color:white;
+}
+
+.submit-btn{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    background:#28a745;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.result-box{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.review-btn{
+    padding:12px 20px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#007bff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.review-question{
+    background:white;
+    padding:20px;
+    margin:20px 0;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.correct{
+    color:green;
+    font-weight:bold;
+}
+
+.wrong{
+    color:red;
+    font-weight:bold;
+}
+
+.unanswered{
+    color:orange;
+    font-weight:bold;
+}
+
+.correct-answer{
+    background:#d4edda;
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+.disabled-option{
+    pointer-events:none;
+    opacity:0.6;
+}
+
+.disabled-btn{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Bank Exam MCQ Quiz</h1>
+
+<!-- ========================= -->
+<!-- TIMER -->
+<!-- ========================= -->
+
+<div id="timer-container">
+
+    <div id="timer">
+        Time Left: 20:00
+    </div>
+
+    <div class="timer-buttons">
+
+        <button id="pauseBtn" onclick="pauseTimer()">
+            Pause
+        </button>
+
+        <button id="resumeBtn" onclick="resumeTimer()" disabled>
+            Resume
+        </button>
+
+    </div>
+
+</div>
+
+<div id="quiz"></div>
+
+<button class="submit-btn" onclick="submitQuiz()">
+Submit Quiz
+</button>
+
+</div>
+
+<script>
+
+// ===============================
+// QUESTIONS AREA
+// ===============================
+
+const questions = [
+
+{q:"Chhattisgarh secured the first position nationally in the third phase of Jal Sanchay Jan Bhagidari (JSJB 3.0) under the Ministry of Jal Shakti (MoJS)'s Catch the Rain Campaign. Which of the following correctly describes the state's achievement?", options:["Completed 77,719 out of 79,775 registered water-conservation structures and ranked first nationally","Completed 23,07,768 out of 24,07,456 structures and ranked first nationally","Completed 79,775 out of 77,719 registered structures and ranked second nationally","Completed 4,05,561 structures and ranked first nationally in JSJB 1.0"], answer:0},
+
+{q:"Chhattisgarh's Koriya district introduced the '5 Per Cent Model' as an innovative water-conservation practice under Jal Sanchay Jan Bhagidari (JSJB). What does this model promote?", options:["Mandatory allocation of 5% of forest land for construction of reservoirs","Voluntary allocation of 5% of agricultural land for groundwater-recharge infrastructure","Allocation of 5% of urban land for rainwater harvesting by municipalities","Government acquisition of 5% of agricultural land for large dams"], answer:1},
+
+{q:"The Government of India aims to create 2 crore new water-conservation structures under its water-conservation initiatives. By when is this target intended to be achieved?", options:["31 May 2026","31 December 2026","31 May 2027","31 March 2027"], answer:2},
+
+{q:"The Indian Institute of Technology Madras (IIT Madras) and United Nations Educational, Scientific and Cultural Organization – Mahatma Gandhi Institute of Education for Peace and Sustainable Development (UNESCO MGIEP) partnered to develop Artificial Intelligence (AI)-based immersive learning tools. Which combination correctly describes the technology focus?", options:["AI, Extended Reality (XR), Game Design and Social & Emotional Learning (SEL)","AI, blockchain, quantum computing and satellite navigation","Extended Reality (XR), robotics, cryptocurrency and digital banking","AI, 5G, semiconductor fabrication and financial technology"], answer:0},
+
+{q:"The partnership between Indian Institute of Technology Madras (IIT Madras) and UNESCO Mahatma Gandhi Institute of Education for Peace and Sustainable Development (UNESCO MGIEP) aims to support which Sustainable Development Goal (SDG) target?", options:["SDG 2.1 relating to ending hunger","SDG 4.7 relating to education for sustainable development and related learning outcomes","SDG 7.2 relating to renewable energy","SDG 13.1 relating exclusively to climate-resilient infrastructure"], answer:1},
+
+{q:"The Defence Research and Development Organisation (DRDO) and Advanced Centre of Research in High Energy Materials (ACRHEM), University of Hyderabad (UoH), secured an Indian patent for BAM-H24. Which statement about BAM-H24 is correct?", options:["It is a liquid aviation fuel designed exclusively for civilian aircraft","It is a boron-, hydrogen- and nitrogen-rich energetic compound developed as a next-generation solid rocket propellant fuel","It is a lithium-based battery material developed for electric vehicles","It is a biodegradable polymer developed for defence packaging"], answer:1},
+
+{q:"The patent for BAM-H24, the next-generation solid rocket propellant fuel developed by the Defence Research and Development Organisation (DRDO) and Advanced Centre of Research in High Energy Materials (ACRHEM), University of Hyderabad (UoH), was granted under which details?", options:["Patent No. 599900, granted on 20 August 2026, with application filed on 21 December 2022","Patent No. 599900, granted on 21 December 2022, with application filed on 20 August 2026","Patent No. 599099, granted on 20 August 2025, with application filed on 21 December 2022","Patent No. 590099, granted on 21 August 2026, with application filed on 20 December 2022"], answer:0},
+
+{q:"Birkbeck, University of London received a Letter of Approval (LoA) from the University Grants Commission (UGC) to establish and operate a Bengaluru campus under the 2023 Foreign Higher Educational Institutions (FHEIs) Regulations. Where will the campus be located?", options:["Sattva Tech Park, Bengaluru, Karnataka","Electronic City, Bengaluru, Karnataka","HITEC City, Hyderabad, Telangana","GIFT City, Gandhinagar, Gujarat"], answer:0},
+
+{q:"Birkbeck, University of London plans to offer Undergraduate (UG) and Postgraduate (PG) Business programmes at its Bengaluru campus. Which statement correctly describes the degree arrangement?", options:["Degrees will be awarded by the University Grants Commission (UGC) under Birkbeck's academic supervision","Degrees will be awarded by the University of London under Birkbeck's academic oversight","Degrees will be jointly awarded by the Government of Karnataka and University of London","Degrees will be awarded exclusively by the Education Centre of Australia (ECA)"], answer:1},
+
+{q:"The United Nations Environment Programme (UNEP) released the report 'Limiting Overshoot: Navigating exceedance of 1.5°C and pathways towards return'. What is one of its key findings?", options:["The 1.5°C warming threshold is certain to remain unbreached throughout the century","A temporary breach of the 1.5°C global warming threshold above pre-industrial levels is highly likely within the next few years","Global warming has already permanently exceeded 3°C above pre-industrial levels","Current policies are sufficient to keep warming below 1°C by 2100"], answer:1},
+
+{q:"According to the United Nations Environment Programme (UNEP)'s 'Limiting Overshoot' report, global surface temperature could peak around 1.8°C above pre-industrial levels even under an optimistic scenario. What does the report warn about temporary overshoot?", options:["All impacts will automatically disappear once temperatures return below 1.5°C","Some impacts arising from temporarily exceeding 1.5°C could become irreversible even if temperatures later decline","Temporary overshoot has no relationship with ecosystem tipping points","Only economic impacts can become irreversible, while environmental impacts remain reversible"], answer:1},
+
+{q:"The United Nations General Assembly (UNGA) adopted the 'Correct the Map' resolution on 4 September 2026 to promote more equitable cartographic representation. Which statement correctly describes the resolution?", options:["It is legally binding and completely bans the use of Mercator maps worldwide","It was adopted with 164 votes in favour, while the United States voted against and six countries abstained","It was sponsored by Greenland and opposed by all African Union members","It requires every country to replace all navigation maps with the Equal Earth projection"], answer:1},
+
+{q:"The 'Correct the Map' resolution adopted by the United Nations General Assembly (UNGA) highlighted the distortion in the Mercator projection. Which comparison was specifically emphasised?", options:["Africa is approximately 14 times larger than Greenland, although Mercator maps visually exaggerate Greenland's relative size","Greenland is approximately 14 times larger than Africa but is reduced by Mercator projection","Africa and Greenland are approximately equal in actual area but differ only in population","Africa is approximately twice the size of Greenland, according to the resolution"], answer:0},
+
+{q:"The Equal Earth projection was highlighted in the United Nations General Assembly (UNGA)'s 'Correct the Map' resolution. What type of map projection is Equal Earth?", options:["A conformal projection designed primarily for maritime navigation","An equal-area pseudocylindrical projection that preserves relative sizes while retaining recognisable continental shapes","A cylindrical projection that intentionally exaggerates polar regions","A perspective projection designed exclusively for aviation routes"], answer:1},
+
+{q:"Prime Minister Narendra Modi visited Kyrgyzstan from 31 August to 1 September 2026 to attend the 26th Meeting of the Council of Heads of State (CHS) of the Shanghai Cooperation Organisation (SCO). Who invited him to Kyrgyzstan?", options:["President Sadyr Japarov of Kyrgyzstan","President Shavkat Mirziyoyev of Uzbekistan","President Vladimir Putin of Russia","President Masoud Pezeshkian of Iran"], answer:0},
+
+{q:"During Prime Minister Narendra Modi's visit to Kyrgyzstan for the 26th Shanghai Cooperation Organisation (SCO) summit, he attended the opening ceremony of the 6th World Nomad Games in Bishkek. Which combination of leaders was also mentioned as attending the ceremony?", options:["Vladimir Putin, Masoud Pezeshkian and other SCO leaders","Donald Trump, Emmanuel Macron and other NATO leaders","Shavkat Mirziyoyev, Olaf Scholz and other European Union leaders","King Charles III, Justin Trudeau and other Commonwealth leaders"], answer:0},
+
+{q:"Razorpay, in partnership with IndusInd Bank Limited, launched 'RAY' on WhatsApp for businesses, particularly Micro, Small and Medium Enterprises (MSMEs). What is RAY?", options:["A blockchain-based digital currency issued by IndusInd Bank","A conversational Artificial Intelligence (AI) Account Manager enabling businesses to manage payments and banking operations through chat-based commands","A new credit-rating platform for MSMEs developed by the Reserve Bank of India (RBI)","A payment card exclusively designed for government employees"], answer:1},
+
+{q:"Which of the following is NOT a feature associated with Razorpay and IndusInd Bank's Artificial Intelligence (AI) Account Manager 'RAY' on WhatsApp?", options:["Payment-link generation and refunds","Transaction analysis and settlement-related functions","Payment-health tracking, alerts, insights and recommendations","Physical branch cash deposits and biometric ATM withdrawal management"], answer:3},
+
+{q:"Which of the following correctly matches the organisation with its establishment year and headquarters based on the given details?", options:["DRDO – 1958 – New Delhi","UNEP – 1958 – Nairobi, Kenya","IIT Madras – 1972 – Chennai, Tamil Nadu","Razorpay – 2001 – Bengaluru, Karnataka"], answer:0},
+
+
+{q:"Which of the following correctly describes the Memorandum of Understanding (MoU) signed between the Securities and Exchange Board of India (SEBI) and the European Securities and Markets Authority (ESMA) regarding Central Counterparties (CCPs)?", options:["It focuses on cooperation in banking supervision and replaces the 2018 SEBI–ESMA agreement","It strengthens regulatory cooperation and information exchange concerning CCPs and replaces the earlier agreement signed on 21 June 2017","It enables ESMA to directly supervise all Indian stock exchanges under European Market Infrastructure Regulation (EMIR)","It concerns only foreign exchange transactions between India and European Union member states"], answer:1},
+
+{q:"Who signed the new regulatory cooperation agreement between the Securities and Exchange Board of India (SEBI) and the European Securities and Markets Authority (ESMA) concerning Central Counterparties (CCPs)?", options:["SEBI Chairman Tuhin Kanta Pandey and ESMA Chair Verena Ross","SEBI Chairman Madhabi Puri Buch and ESMA Chair Verena Ross","SEBI Chairman Tuhin Kanta Pandey and ESMA Chair Christine Lagarde","SEBI Chairman Ajay Tyagi and ESMA Chair Verena Ross"], answer:0},
+
+{q:"Under the new Securities and Exchange Board of India (SEBI)–European Securities and Markets Authority (ESMA) arrangement, which regulatory framework and provision allow SEBI-supervised Indian Central Counterparties (CCPs) to re-apply for recognition in Europe?", options:["Markets in Financial Instruments Directive (MiFID), Article 17","Capital Requirements Regulation (CRR), Article 25","European Market Infrastructure Regulation (EMIR), Article 25","Alternative Investment Fund Managers Directive (AIFMD), Article 21"], answer:2},
+
+{q:"A Central Counterparty (CCP) is an important financial-market infrastructure entity. Which of the following best explains its primary role?", options:["It acts as a central bank that controls monetary policy and liquidity","It acts as an intermediary between buyers and sellers to manage counterparty risk and facilitate clearing and settlement","It provides only long-term development finance to infrastructure companies","It regulates securities markets by issuing trading licences to stock exchanges"], answer:1},
+
+{q:"Japan Credit Rating Agency (JCR/JCRA) upgraded India's Foreign Currency and Local Currency Long-Term Issuer Ratings after 35 years. What was the correct rating movement and outlook?", options:["From BBB to BBB+, with a Negative outlook","From BBB+ to A-, with a Stable outlook","From A- to A, with a Positive outlook","From BBB+ to A, with a Stable outlook"], answer:1},
+
+{q:"Which combination correctly reflects the reasons cited by Japan Credit Rating Agency (JCR/JCRA) for upgrading India's sovereign credit rating from 'BBB+' to 'A-'?", options:["Weak domestic consumption, lower investment and reduced capital expenditure","Strong economic growth, effective policies, robust consumption and investment, and a stronger financial system","Higher fiscal deficit, rising gross NPAs and weaker banking supervision","Declining GDP growth, reduced government support and lower infrastructure spending"], answer:1},
+
+{q:"According to the details associated with Japan Credit Rating Agency (JCR/JCRA)'s upgrade of India, which statement regarding India's fiscal and banking-sector position is correct?", options:["Central Government fiscal deficit increased from 4.4% to 4.7% between FY2025-26 and FY2026-27","Gross NPA ratio remained above 5% by March 2026 despite stricter supervision","Central Government fiscal deficit declined from 4.7% in FY2024-25 to 4.4% in FY2025-26, while gross NPA ratio fell to 1.8% by March 2026","The fiscal deficit declined because capital expenditure was substantially reduced"], answer:2},
+
+{q:"The Bank of Canada (BoC) unveiled a new Canadian Dollar (CAD) 20 banknote featuring King Charles III. Which feature of the note is correctly stated?", options:["It is the first horizontal Canadian banknote to feature King Charles III and carries Parliament Hill on the reverse","It is a vertical banknote whose reverse features the Vimy Ridge Memorial in France","It is a vertical banknote featuring Niagara Falls on the reverse and no floral motifs","It is the first Canadian polymer note and is already in general circulation"], answer:1},
+
+{q:"The new Canadian Dollar (CAD) 20 banknote unveiled by the Bank of Canada (BoC) includes floral and Indigenous cultural motifs. Which of the following is correctly associated with the note?", options:["Floral emblems of Canada's 13 provinces and territories, along with Indigenous cultural flowers such as wild strawberries and western red cedar","Only the national floral emblem of Canada is represented, without territorial motifs","Floral symbols of all 50 US states are included to represent North American cooperation","Only European floral species are included because the note commemorates Canada's European heritage"], answer:0},
+
+{q:"The National Highways Authority of India (NHAI) announced the Green Highways Excellence Awards 2026. What is the primary purpose of these awards?", options:["To recognise the highest toll collection on National Highways during the financial year","To recognise and promote best practices in National Highway (NH) landscaping and plantation management","To identify the fastest-growing automobile manufacturers operating along National Highways","To reward states solely for constructing new expressways under the Bharatmala programme"], answer:1},
+
+{q:"The Green Highways Excellence Awards 2026 were organised under which policy and ministry framework?", options:["National Highway Development Policy, 2005, under the Ministry of Environment, Forest and Climate Change","Green Highways Policy, 2015, under the Ministry of Road Transport and Highways (MoRTH)","National Logistics Policy, 2022, under the Ministry of Commerce and Industry","National Clean Air Programme, 2019, under the Ministry of Housing and Urban Affairs"], answer:1},
+
+{q:"How many nominations were received for the Green Highways Excellence Awards 2026 announced by the National Highways Authority of India (NHAI), and how were they distributed across the three categories?", options:["86 nominations—27 Avenue Plantations, 36 Median Plantations and 23 Plantation in Land Parcels","80 nominations—25 Avenue Plantations, 30 Median Plantations and 25 Plantation in Land Parcels","86 nominations—23 Avenue Plantations, 36 Median Plantations and 27 Plantation in Land Parcels","90 nominations—30 Avenue Plantations, 30 Median Plantations and 30 Plantation in Land Parcels"], answer:0},
+
+{q:"Which project secured first position in Category I – Avenue Plantations under the Green Highways Excellence Awards 2026 announced by the National Highways Authority of India (NHAI)?", options:["Hyderabad–Yadgiri on NH-163","Jamtha Clover Leaf on NH-44 in Nagpur","Chilakaluripet Bypass on NH-16 near Vijayawada","Varanasi Ring Road on NH-31"], answer:2},
+
+{q:"Which of the following correctly matches the category and first-position winner under the Green Highways Excellence Awards 2026?", options:["Avenue Plantations – Hyderabad–Yadgiri, NH-163","Median Plantations – Hyderabad–Yadgiri, NH-163","Plantation in Land Parcels – Chilakaluripet Bypass, NH-16","Median Plantations – Jamtha Clover Leaf, NH-44, Nagpur"], answer:1},
+
+{q:"Adobe Inc. appointed Anil Chakravarthy as its President and Chief Executive Officer (CEO), effective 1 December 2026. Who did he succeed, and what role will the predecessor assume?", options:["He succeeded Shantanu Narayen, who will transition to Executive Chair","He succeeded John Warnock, who will become Executive Chair","He succeeded Charles Geschke, who will become Chief Technology Officer","He succeeded Satya Nadella, who will transition to Executive Chair"], answer:0},
+
+{q:"Which of the following correctly describes Anil Chakravarthy's professional background before becoming President and Chief Executive Officer (CEO) of Adobe Inc.?", options:["He was formerly CEO of Informatica and had leadership roles at Symantec, VeriSign and McKinsey & Company","He was formerly CEO of Salesforce and held leadership roles at IBM and Oracle","He was formerly CEO of Microsoft and previously worked at Apple and Google","He was formerly CEO of SAP and had leadership roles at Adobe and Amazon"], answer:0},
+
+{q:"National Teachers' Day is observed in India on 5 September. Which combination correctly explains its historical significance?", options:["It commemorates the birth anniversary of Dr. Sarvepalli Radhakrishnan, and the first observance took place on 5 September 1962","It commemorates the birth anniversary of Dr. A.P.J. Abdul Kalam, and was first observed in 1965","It marks the birth anniversary of Mahatma Gandhi, and was first observed in 1950","It commemorates the death anniversary of Dr. Sarvepalli Radhakrishnan, and was first observed in 1962"], answer:0},
+
+{q:"The International Day of Charity is observed annually by the United Nations (UN) on 5 September. Why was this date selected?", options:["To commemorate the adoption of the Universal Declaration of Human Rights","To commemorate the death anniversary of Mother Teresa in 1997","To mark the establishment of the United Nations in 1945","To commemorate the birth anniversary of Mother Teresa"], answer:1},
+
+{q:"Punjab launched the 'Pehchaan' portal to identify unidentified and unclaimed deceased persons in government mortuaries. Which statement correctly describes this initiative?", options:["It is India's first statewide digital identification system of its kind and is built on the Medico-Legal Examination and Post-Mortem Reporting System (MedLEaPR)","It is a Central Government portal developed exclusively by the Reserve Bank of India (RBI) for missing bank-account holders","It is a police-only database that cannot be accessed publicly and is unrelated to forensic laboratories","It was developed by the Election Commission of India (ECI) to identify deceased voters"], answer:0},
+
+{q:"The Tamil Nadu government announced the establishment of a world-class Tamil Nadu Olympic City in Chennai. Which of the following correctly describes the project?", options:["It will be established at Semmencheri and will include a High-Performance Training Centre, Sports Science Centre, Sports Medicine Centre and athlete accommodation","It will be established in Madurai and will focus exclusively on cricket stadiums and cricket academies","It will replace all existing sports facilities in Chennai and will not include athlete accommodation","It will be established at Coimbatore as part of the Green Highways Policy, 2015"], answer:0},
+];
+
+
+
+// ===============================
+// VARIABLES
+// ===============================
+
+let userAnswers = new Array(questions.length).fill(null);
+
+let markedForReview = new Array(questions.length).fill(false);
+
+let submitted = false;
+
+// ===============================
+// LOAD QUIZ
+// ===============================
+
+function loadQuiz(){
+
+    const quizDiv = document.getElementById("quiz");
+
+    questions.forEach((question,index)=>{
+
+        const qDiv = document.createElement("div");
+
+        qDiv.classList.add("question");
+
+        qDiv.id = `question_${index}`;
+
+        qDiv.innerHTML = `
+        <h3>Q${index+1}. ${question.q}</h3>
+        `;
+
+        question.options.forEach((option,optIndex)=>{
+
+            const opt = document.createElement("div");
+
+            opt.classList.add("option");
+
+            opt.innerText = option;
+
+            opt.onclick = ()=>selectOption(index,optIndex,opt);
+
+            opt.id = `q${index}_opt${optIndex}`;
+
+            qDiv.appendChild(opt);
+
+        });
+
+        // MARK BUTTON
+
+        const markBtn = document.createElement("button");
+
+        markBtn.innerText = "Mark For Review";
+
+        markBtn.classList.add("mark-btn");
+
+        markBtn.onclick = ()=>toggleMark(index,markBtn);
+
+        qDiv.appendChild(markBtn);
+
+        // CLEAR BUTTON
+
+        const clearBtn = document.createElement("button");
+
+        clearBtn.innerText = "Clear";
+
+        clearBtn.classList.add("clear-btn");
+
+        clearBtn.onclick = ()=>clearAnswer(index);
+
+        qDiv.appendChild(clearBtn);
+
+        quizDiv.appendChild(qDiv);
+
+    });
+
+}
+
+// ===============================
+// SELECT OPTION
+// ===============================
+
+function selectOption(qIndex,optIndex,element){
+
+    if(submitted) return;
+
+    userAnswers[qIndex] = optIndex;
+
+    const options = document.querySelectorAll(`[id^="q${qIndex}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+    element.classList.add("selected");
+
+}
+
+// ===============================
+// MARK FOR REVIEW
+// ===============================
+
+function toggleMark(index,button){
+
+    markedForReview[index] = !markedForReview[index];
+
+    const questionBox = document.getElementById(`question_${index}`);
+
+    if(markedForReview[index]){
+
+        button.classList.add("marked");
+
+        button.innerText = "Marked For Review";
+
+        questionBox.classList.add("review-marked");
+
+    }else{
+
+        button.classList.remove("marked");
+
+        button.innerText = "Mark For Review";
+
+        questionBox.classList.remove("review-marked");
+
+    }
+
+}
+
+// ===============================
+// CLEAR ANSWER
+// ===============================
+
+function clearAnswer(index){
+
+    if(submitted) return;
+
+    userAnswers[index] = null;
+
+    const options = document.querySelectorAll(`[id^="q${index}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+}
+
+// ===============================
+// SUBMIT QUIZ
+// ===============================
+
+function submitQuiz(){
+
+    if(submitted) return;
+
+    submitted = true;
+
+    clearInterval(timer);
+
+    let score = 0;
+
+    let correctCount = 0;
+    let wrongCount = 0;
+    let unansweredCount = 0;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        if(userAns === null){
+
+            unansweredCount++;
+
+        }
+        else if(userAns === question.answer){
+
+            score += 1;
+            correctCount++;
+
+        }
+        else{
+
+            score -= 0.25;
+            wrongCount++;
+
+        }
+
+    });
+
+    let attempted = correctCount + wrongCount;
+
+    let accuracy = attempted > 0
+    ? ((correctCount/attempted)*100).toFixed(2)
+    : 0;
+
+    document.body.innerHTML = `
+
+    <div class="container">
+
+        <div class="result-box">
+
+            <h1>Quiz Submitted ✅</h1>
+
+            <h2>Total Score: ${score.toFixed(2)}</h2>
+
+            <h3>Correct Answers: ${correctCount}</h3>
+
+            <h3>Wrong Answers: ${wrongCount}</h3>
+
+            <h3>Unanswered Questions: ${unansweredCount}</h3>
+
+            <h3>Accuracy: ${accuracy}%</h3>
+
+            <button class="review-btn" onclick="reviewAnswers()">
+            Review Answers
+            </button>
+
+            <div id="reviewSection"></div>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+// ===============================
+// REVIEW ANSWERS
+// ===============================
+
+function reviewAnswers(){
+
+    const reviewSection = document.getElementById("reviewSection");
+
+    let html = `<h1 style="margin-top:40px;">Review Section</h1>`;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        let status = "";
+        let marks = "";
+
+        if(userAns === null){
+
+            status = `<span class="unanswered">Unanswered</span>`;
+            marks = `0 Marks`;
+
+        }
+        else if(userAns === question.answer){
+
+            status = `<span class="correct">Correct ✅</span>`;
+            marks = `+1 Mark`;
+
+        }
+        else{
+
+            status = `<span class="wrong">Wrong ❌</span>`;
+            marks = `-0.25 Mark`;
+
+        }
+
+        html += `
+
+        <div class="review-question">
+
+            <h3>Q${index+1}. ${question.q}</h3>
+
+            <p>${status}</p>
+
+            <p><b>Marks:</b> ${marks}</p>
+
+            <p>
+            <b>Your Answer:</b>
+            ${
+                userAns === null
+                ? "Not Attempted"
+                : question.options[userAns]
+            }
+            </p>
+
+            <div class="correct-answer">
+            <b>Correct Answer:</b>
+            ${question.options[question.answer]}
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    reviewSection.innerHTML = html;
+
+}
+
+// ===============================
+// TIMER
+// ===============================
+
+let time = 1800;
+
+let timer;
+
+let isPaused = false;
+
+function startTimer(){
+
+    timer = setInterval(()=>{
+
+        if(!isPaused){
+
+            let minutes = Math.floor(time/60);
+
+            let seconds = time%60;
+
+            document.getElementById("timer").innerText =
+            `Time Left: ${minutes}:${seconds < 10 ? '0'+seconds : seconds}`;
+
+            time--;
+
+            if(time < 0){
+
+                clearInterval(timer);
+
+                alert("Time is up! Quiz auto-submitted.");
+
+                submitQuiz();
+
+            }
+
+        }
+
+    },1000);
+
+}
+
+// ===============================
+// PAUSE TIMER
+// ===============================
+
+function pauseTimer(){
+
+    if(submitted) return;
+
+    isPaused = true;
+
+    document.getElementById("pauseBtn").disabled = true;
+
+    document.getElementById("resumeBtn").disabled = false;
+
+    // Disable options
+    document.querySelectorAll(".option").forEach(opt=>{
+        opt.classList.add("disabled-option");
+    });
+
+    // Disable buttons
+    document.querySelectorAll(".mark-btn, .clear-btn").forEach(btn=>{
+        btn.disabled = true;
+        btn.classList.add("disabled-btn");
+    });
+
+}
+// ===============================
+// RESUME TIMER
+// ===============================
+
+function resumeTimer(){
+
+    if(submitted) return;
+
+    isPaused = false;
+
+    document.getElementById("pauseBtn").disabled = false;
+
+    document.getElementById("resumeBtn").disabled = true;
+
+    // Enable options
+    document.querySelectorAll(".option").forEach(opt=>{
+        opt.classList.remove("disabled-option");
+    });
+
+    // Enable buttons
+    document.querySelectorAll(".mark-btn, .clear-btn").forEach(btn=>{
+        btn.disabled = false;
+        btn.classList.remove("disabled-btn");
+    });
+
+}
+// ===============================
+
+loadQuiz();
+
+startTimer();
+
+</script>
+
+</body>
+</html>
